@@ -21,6 +21,7 @@ class View {
     // Gap between playfield and side panel
     this.gap = 30;
 
+    // Width of the border around playfield
     this.borderWidth = this.cvsConfig.borderWidth;
 
     // Frame

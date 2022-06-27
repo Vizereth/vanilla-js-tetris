@@ -11,7 +11,6 @@ class Timer {
     const speed = 1100 - this.game.level * 100;
 
     this.view.render();
-
     this.game.playing = true;
     this.timer = setInterval(() => this.play(), speed);
   }
