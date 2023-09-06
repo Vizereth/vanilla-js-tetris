@@ -1,25 +1,11 @@
 (() => {
     "use strict";
-    function isWebp() {
-        function testWebP(callback) {
-            let webP = new Image;
-            webP.onload = webP.onerror = function() {
-                callback(2 == webP.height);
-            };
-            webP.src = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
-        }
-        testWebP((function(support) {
-            let className = true === support ? "webp" : "no-webp";
-            document.documentElement.classList.add(className);
-        }));
-    }
     const settingsConfig = {
         minLevel: 1,
         maxLevel: 5
     };
-    const playFieldConfig = [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ];
     const canvasConfig = {
-        width: 590,
+        width: 500,
         height: 630,
         borderWidth: 5,
         playFieldWidth: 360,
@@ -27,6 +13,12 @@
         rows: 20,
         columns: 10
     };
+    const playFieldConfig = [];
+    for (let i = 0; i < canvasConfig.rows; i++) {
+        const row = [];
+        for (let j = 0; j < canvasConfig.columns; j++) row.push(0);
+        playFieldConfig.push(row);
+    }
     const scoreConfig = {
         1: 40,
         2: 100,
@@ -161,13 +153,16 @@
         }
     }
     class View {
-        constructor(game, piece, score, el, cvsConfig, colorsConfig, fontConfig) {
+        constructor(game, piece, score, el, overlayScreen, startScreen, controlsScreen, cvsConfig, colorsConfig, fontConfig) {
             this.game = game;
             this.score = score;
             this.piece = piece;
             this.cvsConfig = cvsConfig;
             this.colorsConfig = colorsConfig;
             this.fontConfig = fontConfig;
+            this.overlayScreen = overlayScreen;
+            this.startScreen = startScreen;
+            this.controlsScreen = controlsScreen;
             this.el = el;
             this.cvs = null;
             this.ctx = null;
@@ -209,6 +204,7 @@
             this.cellHeight = this.playFieldHeight / rows;
         }
         render() {
+            this.overlayScreen.classList.remove("visible");
             this.clear();
             this.renderFrame();
             this.renderPlayFieldBackground();
@@ -229,6 +225,7 @@
             this.ctx.fillRect(this.playFieldX, this.playFieldY, this.playFieldWidth, this.playFieldHeight);
         }
         renderStartScreen() {
+            this.startScreen.classList.add("visible");
             this.clear();
             const {colorPrimary, fontFamily, fontSizeBig} = this.fontConfig;
             this.ctx.beginPath();
@@ -240,18 +237,11 @@
             this.ctx.closePath();
         }
         renderPauseScreen() {
-            const {colorPrimary, fontFamily, fontSizeBig} = this.fontConfig;
-            this.ctx.beginPath();
-            this.ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
-            this.ctx.fillRect(0, 0, this.cvsWidth, this.cvsHeight);
-            this.ctx.fillStyle = colorPrimary;
-            this.ctx.font = `${fontSizeBig} ${fontFamily}`;
-            this.ctx.textAlign = "center";
-            this.ctx.textBaseline = "middle";
-            this.ctx.fillText("RESUME", this.cvsWidth / 2, this.cvsHeight / 2);
-            this.ctx.closePath();
+            this.overlayScreen.classList.add("visible");
         }
         renderGameOverScreen() {
+            this.startScreen.classList.add("visible");
+            this.controlsScreen.classList.remove("visible");
             this.clear();
             const {colorPrimary, fontFamily, fontSizeMedium} = this.fontConfig;
             this.ctx.fillStyle = colorPrimary;
@@ -424,24 +414,63 @@
             this.view = view;
             this.piece = piece;
             this.timer = timer;
+            this.x1 = null;
+            this.x2 = null;
+            this.y1 = null;
+            this.y2 = null;
+        }
+        difference(a, b) {
+            return Math.abs(a - b);
         }
         init() {
+            const startScreen = document.querySelector(".start-screen");
+            const controlsScreen = document.querySelector(".controls-screen");
+            const btnLeft = document.querySelector(".controls-screen-btn-left");
+            const btnRight = document.querySelector(".controls-screen-btn-right");
+            const btnRotate = document.querySelector(".controls-screen-btn-rotate");
             document.addEventListener("keydown", (e => {
                 const keyCode = e.code;
                 this.onArrowKeyHandler(keyCode);
                 switch (keyCode) {
                   case "Enter":
-                    this.onENTERHandler();
+                    this.play();
                     break;
 
                   case "Escape":
-                    this.onESCAPEHandler();
+                    this.pause();
                     break;
 
                   default:
                     return;
                 }
             }));
+            btnLeft.addEventListener("touchstart", (() => this.piece.moveLeft()));
+            btnRight.addEventListener("touchstart", (() => this.piece.moveRight()));
+            btnRotate.addEventListener("touchstart", (() => this.piece.rotate()));
+            startScreen.addEventListener("touchstart", (() => {
+                startScreen.classList.remove("visible");
+                controlsScreen.classList.add("visible");
+                this.play();
+            }));
+        }
+        touchStart(event) {
+            event = event || window.event;
+            event.preventDefault();
+            this.x1 = event.touches[0].clientX;
+            this.y1 = event.touches[0].clientY;
+        }
+        touchEnd(event) {
+            if (null === this.x1 || null === this.y1) return;
+            if (!this.game.playing) return;
+            event = event || window.event;
+            event.preventDefault();
+            this.x2 = event.touches[0].clientX;
+            this.y2 = event.touches[0].clientY;
+            if (this.difference(this.x1, this.x2) > this.difference(this.y1, this.y2)) if (this.x2 - this.x1 > 0) this.piece.moveRight(); else this.piece.moveLeft(); else if (this.difference(this.x1, this.x2) < this.difference(this.y1, this.y2)) if (this.y2 - this.y1 < 0) this.piece.rotate(); else this.piece.moveDown();
+            this.x1 = null;
+            this.x2 = null;
+            this.y1 = null;
+            this.y2 = null;
         }
         onArrowKeyHandler(keyCode) {
             if (!this.game.playing) return;
@@ -467,12 +496,12 @@
             }
             this.view.render();
         }
-        onESCAPEHandler() {
+        pause() {
             if (!this.game.playing) return;
             this.game.playing = false;
             this.timer.stop();
         }
-        onENTERHandler() {
+        play() {
             if (this.game.playing) return;
             if (!this.game.playing && !this.game.isGameOver) {
                 this.timer.start();
@@ -521,7 +550,7 @@
         const game = new Game(settingsConfig, playFieldConfig, canvasConfig, score);
         const piece = new Piece(game, piecesConfig, canvasConfig);
         piece.init();
-        const view = new View(game, piece, score, document.querySelector(".app__game"), canvasConfig, colorsConfig, fontConfig);
+        const view = new View(game, piece, score, document.querySelector(".app__game"), document.querySelector(".overlay-screen"), document.querySelector(".start-screen"), document.querySelector(".controls-screen"), canvasConfig, colorsConfig, fontConfig);
         view.init();
         const timer = new Timer(game, view, piece);
         const controller = new Controller(game, piece, view, timer);
@@ -539,5 +568,4 @@
         }), 3e3);
     }));
     window["FLS"] = true;
-    isWebp();
 })();
