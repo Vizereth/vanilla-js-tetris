@@ -1,5 +1,5 @@
 class View {
-  constructor(game, piece, score, el, cvsConfig, colorsConfig, fontConfig) {
+  constructor(game, piece, score, el, overlayScreen, startScreen, controlsScreen, cvsConfig, colorsConfig, fontConfig) {
     this.game = game;
     this.score = score;
     this.piece = piece;
@@ -8,6 +8,9 @@ class View {
     this.colorsConfig = colorsConfig;
     this.fontConfig = fontConfig;
 
+    this.overlayScreen = overlayScreen;
+    this.startScreen = startScreen;
+    this.controlsScreen = controlsScreen;
     this.el = el;
     this.cvs = null;
     this.ctx = null;
@@ -70,6 +73,8 @@ class View {
   }
 
   render() {
+    this.overlayScreen.classList.remove("visible");
+
     this.clear();
 
     this.renderFrame();
@@ -103,6 +108,8 @@ class View {
   }
 
   renderStartScreen() {
+    this.startScreen.classList.add("visible");
+
     this.clear();
 
     const { colorPrimary, fontFamily, fontSizeBig } = this.fontConfig;
@@ -121,20 +128,13 @@ class View {
   }
 
   renderPauseScreen() {
-    const { colorPrimary, fontFamily, fontSizeBig } = this.fontConfig;
-
-    this.ctx.beginPath();
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-    this.ctx.fillRect(0, 0, this.cvsWidth, this.cvsHeight);
-    this.ctx.fillStyle = colorPrimary;
-    this.ctx.font = `${fontSizeBig} ${fontFamily}`;
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-    this.ctx.fillText('RESUME', this.cvsWidth / 2, this.cvsHeight / 2);
-    this.ctx.closePath();
+    this.overlayScreen.classList.add("visible");
   }
 
   renderGameOverScreen() {
+    this.startScreen.classList.add("visible");
+    this.controlsScreen.classList.remove("visible");
+
     this.clear();
 
     const { colorPrimary, fontFamily, fontSizeMedium } = this.fontConfig;

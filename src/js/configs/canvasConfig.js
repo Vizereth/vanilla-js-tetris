@@ -1,5 +1,5 @@
 const canvasConfig = {
-  width: 590,
+  width: 500,
   height: 630,
   borderWidth: 5,
   playFieldWidth: 360,

@@ -3,7 +3,19 @@ html(lang="en")
     include pug/head.pug
     body
         div.wrapper 
-            main.page 
-                include components/loader/loader.pug
-                include pug/tetris.pug
+          .overlay-screen
+            p resume
+          .start-screen
+          .controls-screen
+            .controls-screen-btn-wrapper
+              .controls-screen-btn.controls-screen-btn-left
+                span.material-symbols-outlined arrow_back_ios
+              .controls-screen-btn.controls-screen-btn-rotate
+                span.material-symbols-outlined refresh
+              .controls-screen-btn.controls-screen-btn-right
+                span.material-symbols-outlined arrow_forward_ios
+
+          main.page 
+            include components/loader/loader.pug
+            include pug/tetris.pug
         include pug/js.pug

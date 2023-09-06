@@ -1,14 +1,14 @@
 .loader {
-  color: rgb(163, 225, 240);
-  font-family: PressStart2P, sans-serif;
   font-weight: 100;
-  font-size: 1.5em;
+  font-size: 1.5rem;
   letter-spacing: 1.5px;
-
   transform: translateY(-4em);
 
+  @include maxMobile {
+    font-size: 1rem;
+  }
+
   &--inactive {
-    color: rgb(240, 240, 240);
     display: none;
   }
 

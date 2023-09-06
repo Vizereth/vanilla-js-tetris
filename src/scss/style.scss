@@ -1,39 +1,17 @@
-@use 'sass:math';
-
-/* ================= Connect Mixins ================= */
-
-@import 'base/mixins';
-
-/* ================= Fonts ================= */
-
-//&display=swap - add to the font url if google fonts are connected via VSCode plugin
-
-// Connect local fonts if any
+@use "sass:math";
+@import "base/mixins";
 @import "fonts/fonts";
 
-/* ================= Icon Font ================= */
-
-// Connect icon font if any
-//@import "fonts/icons";
-
-/* ================= Default Font ================= */
-
-$fontFamily: '';
+$fontFamily: "";
 $fontSize: rem(16); // 16 - default font size
 
 // Colors
-$mainColor: #000; // default color
+$mainColor: rgb(255, 255, 255); // default color
 
 /* ================= General Settings ================= */
-
-// Min page width
 $minWidth: 320;
-// Max page width
 $maxWidth: 1920;
-// Width of the content container. If set to 0, container will have no max width.
 $maxWidthContainer: 1170;
-// Side padding of the container
-// 30 / 2 = 15px on both sides
 $containerPadding: 30;
 
 $containerWidth: $maxWidthContainer + $containerPadding;
@@ -43,73 +21,151 @@ $pc: em($containerWidth); // PC, Landscape Tablet
 $tablet: em(991.98); // Tablet, landscape phones
 $mobile: em(767.98); // Phone L
 $mobileSmall: em(479.98); // Phone S
-
-// Responsiveness type:
-// Responsive all the time
-// Responsive according to the breakpoints i.e. the container changes its width at breakpoints
 $responsiveType: 1;
 
 /* ================= General styles and reset ================= */
+@import "base/null";
 
-@import 'base/null';
+body::-webkit-scrollbar-track {
+  background-color: rgb(49, 49, 49);
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+  background: rgb(49, 49, 49);
+}
+
+body::-webkit-scrollbar-thumb {
+  border: none;
+  border-radius: 10px;
+  background: rgb(49, 49, 49);
+}
 
 body {
-  // Scroll is locked
+  overflow: hidden;
+  color: $mainColor;
+  font-family: PressStart2P, sans-serif;
+  background-color: rgb(5, 5, 5);
+
   .lock & {
     overflow: hidden;
     touch-action: none;
   }
-  // Page has been loaded
   .loaded & {
     visibility: visible;
   }
 }
 
-/* ================= Custom Scrollbar ================= */
-
-body::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
-  background-color: #ffb64800;
-}
-
-body::-webkit-scrollbar {
-  width: 8px;
-  background: rgba(255, 255, 255, 0.904);
-}
-
-body::-webkit-scrollbar-thumb {
-  border: none;
-  border-radius: 25px;
-  background: rgb(49, 49, 49);
-}
-
 /* ================= Page Wrapper ================= */
-
 .wrapper {
+  position: relative;
   background: rgb(24, 24, 24);
   min-height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  // Прижимаем footer
+
   > main {
     flex: 1 1 auto;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @include maxMobile {
+      transform: scale(0.6);
+    }
   }
-  // Фикс для слайдеров
+
   > * {
     min-width: 0;
   }
 }
 
-/*
-This will be applied to all elements with class *__container. E.g. header__container. 
-*/
+/* ================= Google Icons and Controls ================= */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.controls-screen {
+  display: none;
+
+  &.visible {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+
+  .controls-screen-btn-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    padding: 0 25px 25px 25px;
+  }
+
+  .controls-screen-btn {
+    cursor: pointer;
+  }
+
+  span {
+    opacity: 0.25;
+    font-size: 3rem;
+    color: $mainColor;
+  }
+}
+
+/* ================= Pause Screen ================= */
+.overlay-screen {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2rem;
+  text-transform: uppercase;
+
+  @include maxMobile {
+    font-size: 1.5rem;
+  }
+
+  &.visible {
+    display: flex;
+    background-color: rgba(5, 5, 5, 0.75);
+    backdrop-filter: blur(5px);
+  }
+}
+
+/* ================= Start Screen ================= */
+.start-screen {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  &.visible {
+    display: block;
+  }
+}
+
 @if ($responsiveType==1) {
   // Responsive
-  [class*='__container'] {
+  [class*="__container"] {
     @if ($maxWidthContainer>0) {
       max-width: rem($maxWidthContainer);
       box-sizing: content-box;
@@ -119,37 +175,7 @@ This will be applied to all elements with class *__container. E.g. header__conta
       padding: 0 rem(math.div($containerPadding, 2));
     }
   }
-} @else {
-  // According to breakpoints
-  [class*='__container'] {
-    margin: 0 auto;
-    @if ($maxWidthContainer>0) {
-      max-width: rem($maxWidthContainer);
-      box-sizing: content-box;
-    } @else {
-      @if ($containerPadding>0) {
-        padding: 0 rem(math.div($containerPadding, 2));
-      }
-    }
-    @media (max-width: $pc) {
-      max-width: rem(970);
-    }
-    @media (max-width: $tablet) {
-      max-width: rem(750);
-    }
-    @media (max-width: $mobile) {
-      max-width: none;
-      @if ($containerPadding>0 and $maxWidthContainer>0) {
-        padding: 0 rem(math.div($containerPadding, 2));
-      }
-    }
-  }
 }
 
-// Connect base styles, templates and auxiliary classes
-
-@import 'base';
-
-@import 'tetris';
-
+@import "tetris";
 @import "../components//loader/loader";
