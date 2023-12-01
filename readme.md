@@ -1,4 +1,4 @@
-### Javascript Tetris
+# Javascript Tetris
 
 ## Deploy
 

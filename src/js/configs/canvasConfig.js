@@ -4,8 +4,8 @@ const canvasConfig = {
   borderWidth: 5,
   playFieldWidth: 360,
   playFieldHeight: 620,
-  rows: 20,
-  columns: 10
+  rows: 30,
+  columns: 15
 };
 
 export { canvasConfig };

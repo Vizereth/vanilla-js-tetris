@@ -167,7 +167,7 @@ class Piece {
     }
 
     this.reset();
-    this.currentPiece = this.nextPiece;
+    this.currentPiece = JSON.parse(JSON.stringify(this.nextPiece));
     this.positionCurrentPiece();
     this.nextPiece = this.create();
   }
