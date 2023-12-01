@@ -31,7 +31,7 @@ class Piece {
 
     const randomPiece = this.piecesConfig[randomNumber].piece;
 
-    return randomPiece;
+    return JSON.parse(JSON.stringify(randomPiece));
   }
 
   positionCurrentPiece() {
