@@ -317,7 +317,7 @@
             const max = this.piecesConfig.length - 1;
             const randomNumber = getRandomInt(min, max);
             const randomPiece = this.piecesConfig[randomNumber].piece;
-            return randomPiece;
+            return JSON.parse(JSON.stringify(randomPiece));
         }
         positionCurrentPiece() {
             const pieceWidth = this.currentPiece.matrix[0].length;
