@@ -6,12 +6,14 @@
     };
     const canvasConfig = {
         width: 500,
-        height: 630,
-        borderWidth: 5,
+        height: 730,
+        borderWidth: 4,
         playFieldWidth: 360,
-        playFieldHeight: 620,
+        playFieldHeight: 720,
         rows: 30,
-        columns: 15
+        columns: 15,
+        bgColor: "rgb(5, 5, 5)",
+        borderColor: "rgb(25, 25, 25)"
     };
     const playFieldConfig = [];
     for (let i = 0; i < canvasConfig.rows; i++) {
@@ -216,12 +218,12 @@
             }
         }
         renderFrame() {
-            this.ctx.strokeStyle = "rgb(50, 50, 50)";
+            this.ctx.strokeStyle = this.cvsConfig.borderColor;
             this.ctx.lineWidth = this.borderWidth;
             this.ctx.strokeRect(this.frameX, this.frameY, this.playFieldWidth, this.playFieldHeight);
         }
         renderPlayFieldBackground() {
-            this.ctx.fillStyle = "rgb(18, 18, 18)";
+            this.ctx.fillStyle = this.cvsConfig.bgColor;
             this.ctx.fillRect(this.playFieldX, this.playFieldY, this.playFieldWidth, this.playFieldHeight);
         }
         renderStartScreen() {
