@@ -10,8 +10,8 @@
         borderWidth: 5,
         playFieldWidth: 360,
         playFieldHeight: 620,
-        rows: 20,
-        columns: 10
+        rows: 30,
+        columns: 15
     };
     const playFieldConfig = [];
     for (let i = 0; i < canvasConfig.rows; i++) {
@@ -390,7 +390,7 @@
                 if (pieceXY) this.game.playFieldLocked[this.y + row][this.x + col] = pieceXY;
             }
             this.reset();
-            this.currentPiece = this.nextPiece;
+            this.currentPiece = JSON.parse(JSON.stringify(this.nextPiece));
             this.positionCurrentPiece();
             this.nextPiece = this.create();
         }
