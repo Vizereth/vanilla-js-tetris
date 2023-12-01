@@ -97,13 +97,13 @@ class View {
   }
 
   renderFrame() {
-    this.ctx.strokeStyle = 'rgb(50, 50, 50)';
+    this.ctx.strokeStyle = this.cvsConfig.borderColor;
     this.ctx.lineWidth = this.borderWidth;
     this.ctx.strokeRect(this.frameX, this.frameY, this.playFieldWidth, this.playFieldHeight);
   }
 
   renderPlayFieldBackground() {
-    this.ctx.fillStyle = 'rgb(18, 18, 18)';
+    this.ctx.fillStyle = this.cvsConfig.bgColor;
     this.ctx.fillRect(this.playFieldX, this.playFieldY, this.playFieldWidth, this.playFieldHeight);
   }
 
