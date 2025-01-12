@@ -2,7 +2,7 @@
 
 ## Deploy
 
-https://sophrona.github.io/V-Tetris
+https://vizereth.github.io/V-Tetris
 
 ## Project setup
 ```
