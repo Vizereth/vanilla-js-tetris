@@ -2,7 +2,7 @@
 
 ## Deploy
 
-https://vizereth.github.io/V-Tetris
+https://vizereth.github.io/vanilla-js-tetris
 
 ## Project setup
 ```
